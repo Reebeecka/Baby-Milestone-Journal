@@ -1,13 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
-<h2 class="text-2xl font-bold mb-4">Glömt lösenord?</h2>
-<form method="POST" class="space-y-4">
-    <input type="email" name="email" placeholder="Ange din e-postadress" required class="w-full p-2 border rounded">
-    <button type="submit" class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">
-    Skicka återställningslänk
-    </button>
-</form>
-<p class="mt-4 text-sm">
-    <a href="{{ url_for('login') }}" class="text-pink-700 underline">Tillbaka till inloggning</a>
-</p>
+<div class="bg-white p-6 rounded-2xl shadow-md max-w-md mx-auto">
+    <h2 class="text-2xl font-bold mb-4 text-pink-700 text-center">Glömt lösenord?</h2>
+    <p class="text-gray-600 text-center mb-6">
+        Ange din e-postadress så skickar vi en länk för att återställa ditt lösenord.
+    </p>
+
+    <form method="POST" class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">E-postadress</label>
+            <input type="email" name="email" placeholder="exempel@mejl.se" required
+                    class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-pink-400 focus:outline-none">
+        </div>
+
+        <button type="submit"
+                class="w-full bg-pink-600 text-white py-2 rounded-lg font-semibold hover:bg-pink-700 transition">
+            Skicka återställningslänk
+        </button>
+    </form>
+
+    <p class="mt-6 text-center text-sm">
+        <a href="{{ url_for('login') }}" class="text-pink-700 hover:underline">← Tillbaka till inloggning</a>
+    </p>
+</div>
 {% endblock %}

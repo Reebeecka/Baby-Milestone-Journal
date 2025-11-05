@@ -115,21 +115,31 @@ def logout():
 
 # --- Glömt lösenord ---
 @app.route('/forgot', methods=['GET', 'POST'])
+
+# ...
 def forgot_password():
     if request.method == 'POST':
         email = request.form['email']
         with sqlite3.connect("milestones.db") as conn:
             user = conn.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+
+        # Vi svarar likadant oavsett om användaren finns (bra för säkerhet)
         if user:
             token = s.dumps(email, salt='password-reset')
             reset_link = url_for('reset_password', token=token, _external=True)
 
+            # Rendera HTML + text med Jinja
+            html_body = render_template('emails/reset_password.html', reset_link=reset_link)
+            txt_body  = render_template('emails/reset_password.txt',  reset_link=reset_link)
+
             msg = Message("Återställ ditt lösenord", recipients=[email])
-            msg.body = f"Klicka på länken för att återställa ditt lösenord:\n\n{reset_link}\n\nLänken gäller i 1 timme."
+            msg.body = txt_body      # text/fallback
+            msg.html = html_body     # snygg HTML
             mail.send(msg)
 
         return "Om e-postadressen finns registrerad har ett mejl skickats med instruktioner."
-    return render_template('forgot.html')
+    return render_template('forgot_success.html')
+
 
 
 # --- Återställ lösenord via token ---
