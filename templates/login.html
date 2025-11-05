@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">Logga in</h2>
+<form method="POST" class="space-y-4">
+    <input type="email" name="email" placeholder="E-post" required class="w-full p-2 border rounded">
+    <input type="password" name="password" placeholder="Lösenord" required class="w-full p-2 border rounded">
+    <button type="submit" class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">Logga in</button>
+</form>
+<p class="mt-4 text-sm">Har du inget konto? <a href="{{ url_for('register') }}" class="text-pink-700 underline">Registrera dig</a></p>
+<p class="mt-4 text-sm">
+    <a href="{{ url_for('forgot_password') }}" class="text-pink-700 underline">Glömt lösenord?</a>
+</p>
+{% endblock %}

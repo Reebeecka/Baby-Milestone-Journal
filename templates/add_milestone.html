@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2 class="text-2xl font-bold mb-4">Ny milstolpe</h2>
+    <form method="POST" enctype="multipart/form-data" class="space-y-4">
+        <input type="text" name="title" placeholder="Titel" required class="w-full p-2 border rounded">
+        <input type="date" name="date" required class="w-full p-2 border rounded">
+        <textarea name="description" placeholder="Beskrivning" class="w-full p-2 border rounded"></textarea>
+        <input type="file" name="image" accept="image/*" class="w-full p-2 border rounded">
+        <button type="submit" class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">Spara</button>
+    </form>
+{% endblock %}

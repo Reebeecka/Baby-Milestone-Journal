@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Baby Milestone Journal 👶</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-pink-50 text-gray-800 min-h-screen">
+    <div class="max-w-2xl mx-auto p-6">
+        <header class="mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-pink-700">Baby Milestone Journal</h1>
+                <p class="text-gray-500">Fånga ögonblicken 💕</p>
+            </div>
+            <div>
+                {% if current_user.is_authenticated %}
+                    <span class="text-sm text-gray-600 mr-2">{{ current_user.email }}</span>
+                    <a href="{{ url_for('logout') }}" class="text-pink-700 underline hover:text-pink-900">Logga ut</a>
+                {% endif %}
+            </div>
+        </header>
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
