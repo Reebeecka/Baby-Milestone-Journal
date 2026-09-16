@@ -1,5 +1,8 @@
 import os
 import sqlite3
+from pathlib import Path
+
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
@@ -7,12 +10,26 @@ from flask_bcrypt import Bcrypt
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
+# Load local secrets from .env (never commit .env)
+_BACKEND_DIR = Path(__file__).resolve().parent
+_REPO_ROOT = _BACKEND_DIR.parent
+load_dotenv(_REPO_ROOT / ".env")
+load_dotenv(_BACKEND_DIR / ".env", override=True)
+
+
+def _env_bool(name, default=True):
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
 # -----------------------------------------------------------
 # 🔧 FLASK APP SETUP
 # -----------------------------------------------------------
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
-app.secret_key = "superhemligt"
+app.secret_key = os.environ.get("SECRET_KEY", "dev-only-change-me")
 
 # tillåt frontend att anropa API:et
 CORS(app, supports_credentials=True)
@@ -20,15 +37,20 @@ CORS(app, supports_credentials=True)
 bcrypt = Bcrypt(app)
 
 # -----------------------------------------------------------
-# 💌 GMAIL MAIL CONFIG (ändra till din)
+# 💌 MAIL CONFIG (environment variables only)
 # -----------------------------------------------------------
+mail_username = os.environ.get("MAIL_USERNAME", "")
+mail_sender = os.environ.get("MAIL_DEFAULT_SENDER") or mail_username or "noreply@localhost"
 app.config.update(
-    MAIL_SERVER='smtp.gmail.com',
-    MAIL_PORT=587,
-    MAIL_USE_TLS=True,
-    MAIL_USERNAME='familjenskung@gmail.com',        # <-- din Gmail
-    MAIL_PASSWORD='',       # <-- ditt app-lösenord
-    MAIL_DEFAULT_SENDER=('Baby Milestone Journal', 'familjenskung@gmail.com')
+    MAIL_SERVER=os.environ.get("MAIL_SERVER", "smtp.gmail.com"),
+    MAIL_PORT=int(os.environ.get("MAIL_PORT", "587")),
+    MAIL_USE_TLS=_env_bool("MAIL_USE_TLS", True),
+    MAIL_USERNAME=mail_username,
+    MAIL_PASSWORD=os.environ.get("MAIL_PASSWORD", ""),
+    MAIL_DEFAULT_SENDER=(
+        os.environ.get("MAIL_DEFAULT_SENDER_NAME", "Baby Milestone Journal"),
+        mail_sender,
+    ),
 )
 mail = Mail(app)
 s = URLSafeTimedSerializer(app.secret_key)
